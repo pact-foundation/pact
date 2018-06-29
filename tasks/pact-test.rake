@@ -29,6 +29,10 @@ Pact::VerificationTask.new(:term_v2) do | pact |
 	pact.uri './spec/support/term-v2.json'
 end
 
+Pact::VerificationTask.new(:provider_param) do |pact|
+	pact.uri './spec/support/provider_param.json'
+end
+
 Pact::VerificationTask.new(:case_insensitive_response_header_matching) do | pact |
 	pact.uri './spec/support/case-insensitive-response-header-matching.json', :pact_helper => './spec/support/case-insensitive-response-header-matching.rb'
 end
@@ -68,6 +72,7 @@ namespace :pact do
 		Rake::Task['pact:verify:test_app:content_type'].execute
 		Rake::Task['pact:verify:case_insensitive_response_header_matching'].execute
 		Rake::Task['pact:verify:term_v2'].execute
+		Rake::Task['pact:verify:provider_param'].execute
 	end
 
 	desc "All the verification tests with active support loaded"

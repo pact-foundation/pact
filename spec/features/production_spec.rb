@@ -30,6 +30,11 @@ module Pact::Provider
       end
 
       def call(env)
+        if (env['HTTP_AUTHORIZATION'])
+          if env['HTTP_AUTHORIZATION'] != 'password'
+            return [401, {'Content-Type' => 'application/json'}, {error: "The password is 'password'"}.to_json]
+          end
+        end
         case env['PATH_INFO']
         when "/zebra_names"
             [200, {'Content-Type' => 'application/json'}, { names: find_zebra_names }.to_json]

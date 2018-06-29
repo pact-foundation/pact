@@ -1,0 +1,46 @@
+{
+  "consumer": {
+    "name": "some-test-consumer"
+  },
+  "provider": {
+    "name": "an unknown provider"
+  },
+  "interactions": [
+    {
+      "description": "a test request",
+      "request": {
+        "method": "get",
+        "path": "/food_item/5",
+        "query": "",
+        "headers": {
+          "Authorization": "Bearer faketoken"
+        },
+        "matchingRules": {
+          "$.path": {
+            "match": "provider_param",
+            "fill_string": "/food_item/:{id}"
+          },
+          "$.headers.Authorization": {
+            "match": "provider_param",
+            "fill_string": "Bearer :{auth_token}"
+          }
+        }
+      },
+      "response": {
+        "matchingRules": {
+          "$.headers.Content-Type" : {
+            "match": "regex", "regex": "json"
+          }
+        },
+        "status": 200,
+        "headers" : {
+          "Content-Type": "foo/json"
+        },
+        "body": {
+          "message" : "One apple"
+        }
+      },
+      "provider_state": "create one apple"
+    }
+  ]
+}

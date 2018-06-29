@@ -13,8 +13,11 @@ module Pact
         get_global_base_provider_state.set_up
         get_consumer_base_provider_state.set_up
         if provider_state_name
-          get_provider_state.set_up
+          provider_state = get_provider_state
+          provider_state.set_up
+          return provider_state.provider_params
         end
+        return {}
       end
 
       def tear_down_provider_state

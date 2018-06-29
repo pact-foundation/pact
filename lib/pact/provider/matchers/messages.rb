@@ -1,5 +1,6 @@
 require 'term/ansicolor'
 require 'pact/term'
+require 'pact/provider_param'
 
 module Pact
   module Matchers

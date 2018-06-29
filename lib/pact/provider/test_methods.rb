@@ -14,8 +14,8 @@ module Pact
       include Pact::Logging
       include Rack::Test::Methods
 
-      def replay_interaction interaction
-        request = Request::Replayable.new(interaction.request)
+      def replay_interaction interaction, provider_params={}
+        request = Request::Replayable.new(interaction.request, provider_params)
         args = [request.path, request.body, request.headers]
 
         logger.info "Sending #{request.method.upcase} request to path: \"#{request.path}\" with headers: #{request.headers}, see debug logs for body"
