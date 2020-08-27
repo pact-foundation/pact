@@ -47,5 +47,14 @@ describe Pact::Provider::PactURI do
         expect(pact_uri.to_s).to eq(uri)
       end
     end
+
+    context 'when uri is not a string' do
+      let(:uri) { double('uri', to_s: 'real_uri_to_s') }
+      let(:options) { {} }
+
+      it 'should return the to_s of the uri' do
+        expect(pact_uri.to_s).to eq('real_uri_to_s')
+      end
+    end
   end
 end
