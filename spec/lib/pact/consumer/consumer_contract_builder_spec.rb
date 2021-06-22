@@ -63,6 +63,17 @@ module Pact
         end
       end
 
+      describe "#consumer_contract" do
+        it "returns the consumer contract" do
+      		expect(subject.consumer_contract).to eq(
+            consumer: { name: consumer_name },
+            provider: { name: provider_name },
+            pactfile_write_mode: 'overwrite',
+            pact_dir: pact_dir
+          )
+      	end
+      end
+
       describe "#mock_service_base_url" do
 
       	subject do
