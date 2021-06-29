@@ -1,6 +1,7 @@
 require 'json'
 require 'pact/reification'
 require 'pact/shared/null_expectation'
+require 'pact/provider/generators'
 
 module Pact
   module Provider
@@ -10,8 +11,9 @@ module Pact
         # See https://github.com/rack/rack/blob/e7d741c6282ca4cf4e01506f5681e6e6b14c0b32/SPEC#L87-89
         NO_HTTP_PREFIX = ["CONTENT-TYPE", "CONTENT-LENGTH"]
 
-        def initialize expected_request
+        def initialize expected_request, interaction_context = nil
           @expected_request = expected_request
+          @interaction_context = interaction_context
         end
 
         def method
@@ -19,6 +21,11 @@ module Pact
         end
 
         def path
+          if expected_request.methods.include? :generators
+            if expected_request.generators["path"]
+              return Pact::Provider::Generators.execute_generators(expected_request.generators["path"], @interaction_context)
+            end
+          end
           expected_request.full_path
         end
 

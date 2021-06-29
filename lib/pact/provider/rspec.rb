@@ -25,6 +25,7 @@ module Pact
           pact_uri = pact_source.uri
           Pact.configuration.output_stream.puts "INFO: Reading pact at #{pact_uri}"
           consumer_contract = Pact::ConsumerContract.from_json(pact_json)
+        
           suffix = pact_uri.metadata[:pending] ? " [PENDING]": ""
           example_group_description = "Verifying a pact between #{consumer_contract.consumer.name} and #{consumer_contract.provider.name}#{suffix}"
           example_group_metadata = { pactfile_uri: pact_uri, pact_criteria: options[:criteria] }
@@ -77,7 +78,6 @@ module Pact
         end
 
         def describe_interaction interaction, options
-
           # pact_uri and pact_interaction are used by
           # Pact::Provider::RSpec::PactBrokerFormatter
 
@@ -103,8 +103,9 @@ module Pact
             before do | example |
               interaction_context.run_once :before do
                 Pact.configuration.logger.info "Running example '#{Pact::RSpec.full_description(example)}'"
-                set_up_provider_states interaction.provider_states, options[:consumer]
-                replay_interaction interaction, options[:request_customizer]
+                state_params = set_up_provider_states interaction.provider_states, options[:consumer]
+                interaction_context.state_params = state_params
+                replay_interaction interaction, options[:request_customizer], interaction_context
                 interaction_context.last_response = last_response
               end
             end
@@ -128,6 +129,7 @@ module Pact
         def describe_message expected_response, interaction_context
           include Pact::RSpec::Matchers
           extend Pact::Matchers::Messages
+
 
           let(:expected_contents) { expected_response.body[:contents].as_json }
           let(:response) { interaction_context.last_response }
@@ -213,6 +215,8 @@ module Pact
       class InteractionContext
 
         attr_accessor :last_response
+
+        attr_accessor :state_params
 
         def initialize
           @already_run = []
